@@ -8,14 +8,14 @@
         <el-col :span="20">
             <el-form :inline="true" :model="workflowQueryContent" class="el-form--inline">
                 <el-form-item :label="$t('message.wfId')">
-                    <el-input v-model="workflowQueryContent.workflowId" :placeholder="$t('message.wfId')"/>
+                    <el-input v-model="workflowQueryContent.workflowId" size="medium" clearable style="width: 100px;" :placeholder="$t('message.wfId')"/>
                 </el-form-item>
                 <el-form-item :label="$t('message.keyword')">
-                    <el-input v-model="workflowQueryContent.keyword" :placeholder="$t('message.keyword')"/>
+                    <el-input v-model="workflowQueryContent.keyword" size="medium" clearable style="width: 120px;" :placeholder="$t('message.keyword')"/>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="listWorkflow">{{$t('message.query')}}</el-button>
-                    <el-button type="cancel" @click="onClickReset">{{$t('message.reset')}}</el-button>
+                    <el-button type="primary" size="medium" @click="listWorkflow">{{$t('message.query')}}</el-button>
+                    <el-button type="cancel" size="medium" @click="onClickReset">{{$t('message.reset')}}</el-button>
                 </el-form-item>
             </el-form>
         </el-col>
@@ -23,7 +23,7 @@
         <!-- 右侧新增任务按钮，占地面积 4/24 -->
         <el-col :span="4" v-if="!isWorkflow">
             <div style="float:right;padding-right:10px">
-                <el-button type="primary" @click="onClickNewWorkflow">{{$t('message.newWorkflow')}}</el-button>
+                <el-button type="primary" size="medium" @click="onClickNewWorkflow">{{$t('message.newWorkflow')}}</el-button>
             </div>
         </el-col>
     </el-row>

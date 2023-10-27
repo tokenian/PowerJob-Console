@@ -93,11 +93,21 @@
                 <!-- 可以通过指定 Table 组件的 row-class-name 属性来为 Table 中的某一行添加 class，表明该行处于某种状 -->
                 <el-table :data="workerList" style="width: 100%" height="400px" :row-class-name="workerTableRowClassName">
                     <el-table-column prop="address" :label="$t('message.workerAddress')"/>
+                    <el-table-column prop="serviceName" :label="$t('message.serviceName')"/>
                     <el-table-column prop="cpuLoad" :label="$t('message.cpuLoad')"/>
                     <el-table-column prop="memoryLoad" :label="$t('message.memoryLoad')"/>
                     <el-table-column prop="diskLoad" :label="$t('message.diskLoad')"/>
                     <el-table-column prop="tag" label="tag"/>
                     <el-table-column prop="lastActiveTime" :label="$t('message.lastActiveTime')"/>
+                    <el-table-column prop="online" :label="$t('message.operations')">
+                        <template slot-scope="scope">
+                            <el-button type="success" @click="versaOnline(scope.row)">
+                                <span v-if="scope.row.online == true">{{ $t('message.offline') }}</span>
+                                <span v-else-if="scope.row.online == false">{{ $t('message.online') }}</span>
+                                <span v-else>{{ $t('message.unknown') }}</span>
+                            </el-button>
+                        </template>
+                    </el-table-column>
                 </el-table>
 
             </el-col>
@@ -129,23 +139,33 @@
                     case 9999: return 'offline-row';
                     default: return 'error-row';
                 }
+            },
+            versaOnline(row){
+                let appId = this.$store.state.appInfo.id;
+                this.axios.get('/system/versaOnline?appId='+ appId + '&address=' + row.address).then(res =>{
+                    console.log(res);
+                    this.fetchWorkerList(appId);
+                })
+            },
+            fetchWorkerList(appId){
+                this.axios.get("/system/listWorker?appId=" + appId).then(res => {
+                res.sort((a,b) => a.status - b.status );
+                this.workerList = res;
+                let num = 0;
+                this.workerList.forEach(w => {
+                  if (w.status !== 9999) {
+                      num++;
+                  }
+                })
+                this.activeWorkerCount = num;
+            });
             }
         },
         mounted() {
             let that = this;
             let appId = that.$store.state.appInfo.id;
             // 请求 Worker 列表
-            that.axios.get("/system/listWorker?appId=" + appId).then(res => {
-                res.sort((a,b) => a.status - b.status );
-                that.workerList = res;
-                let num = 0;
-                that.workerList.forEach(w => {
-                  if (w.status !== 9999) {
-                      num++;
-                  }
-                })
-                that.activeWorkerCount = num;
-            });
+            this.fetchWorkerList(appId);
             // 请求 Overview
             that.axios.get("/system/overview?appId=" + appId).then(res => {
                 that.systemInfo = res;

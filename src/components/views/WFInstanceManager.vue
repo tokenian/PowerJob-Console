@@ -9,21 +9,15 @@
           class="el-form--inline">
 
           <el-form-item :label="$t('message.wfId')">
-            <el-input
-                    v-model="wfInstanceQueryContent.workflowId"
-                    :placeholder="$t('message.wfId')"
-            />
+            <el-input v-model="wfInstanceQueryContent.workflowId" size="medium" style="width: 100px;" :placeholder="$t('message.wfId')"/>
           </el-form-item>
 
           <el-form-item :label="$t('message.wfInstanceId')">
-            <el-input
-              v-model="wfInstanceQueryContent.wfInstanceId"
-              :placeholder="$t('message.wfInstanceId')"
-            />
+            <el-input v-model="wfInstanceQueryContent.wfInstanceId" size="medium" style="width: 100px;"   :placeholder="$t('message.wfInstanceId')"/>
           </el-form-item>
 
           <el-form-item :label="$t('message.status')">
-            <el-select v-model="wfInstanceQueryContent.status" :placeholder="$t('message.status')">
+            <el-select v-model="wfInstanceQueryContent.status" size="medium" :placeholder="$t('message.status')">
               <el-option
                       v-for="item in wfInstanceStatusOptions"
                       :key="item.key"
@@ -34,14 +28,14 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="listWfInstances">{{$t('message.query')}}</el-button>
-            <el-button type="cancel" @click="onClickRest">{{$t('message.reset')}}</el-button>
+            <el-button type="primary" size="medium" @click="listWfInstances">{{$t('message.query')}}</el-button>
+            <el-button type="cancel" size="medium" @click="onClickRest">{{$t('message.reset')}}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
       <el-col :span="4">
         <div style="float:right;padding-right:10px">
-          <el-button type="primary" @click="listWfInstances"
+          <el-button type="primary" size="medium" @click="listWfInstances"
             >{{$t('message.refresh')}}</el-button
           >
         </div>

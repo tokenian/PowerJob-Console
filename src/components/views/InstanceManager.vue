@@ -5,25 +5,25 @@
       <el-col :span="22">
         <el-form :inline="true" :model="instanceQueryContent" class="el-form--inline">
           <el-form-item :label="$t('message.jobId')">
-            <el-input v-model="instanceQueryContent.jobId" :placeholder="$t('message.jobId')" />
+            <el-input v-model="instanceQueryContent.jobId" style="width: 100px;" clearable size="medium" :placeholder="$t('message.jobId')" />
+          </el-form-item>
+          <el-form-item :label="$t('message.serviceName')">
+            <el-input v-model="instanceQueryContent.serviceName" style="width: 140px;" clearable size="medium" :placeholder="$t('message.serviceName')"/>
           </el-form-item>
           <el-form-item :label="$t('message.instanceId')">
-            <el-input
-              v-model="instanceQueryContent.instanceId"
-              :placeholder="$t('message.instanceId')"
-            />
+            <el-input v-model="instanceQueryContent.instanceId" style="width: 200px;" clearable size="medium" :placeholder="$t('message.instanceId')"/>
           </el-form-item>
           <el-form-item
             v-if="instanceQueryContent.type === 'WORKFLOW'"
             :label="$t('message.wfInstanceId')"
           >
             <el-input
-              v-model="instanceQueryContent.wfInstanceId"
+              v-model="instanceQueryContent.wfInstanceId" size="medium" clearable style="width: 100px;"
               :placeholder="$t('message.wfInstanceId')"
             />
           </el-form-item>
           <el-form-item :label="$t('message.status')">
-            <el-select v-model="instanceQueryContent.status" :placeholder="$t('message.status')">
+            <el-select v-model="instanceQueryContent.status" size="medium" clearable :placeholder="$t('message.status')">
               <el-option
                 v-for="item in instanceStatusOptions"
                 :key="item.key"
@@ -34,14 +34,14 @@
           </el-form-item>
 
           <el-form-item>
-            <el-button type="primary" @click="listInstanceInfos">{{$t('message.query')}}</el-button>
-            <el-button type="cancel" @click="onClickRest">{{$t('message.reset')}}</el-button>
+            <el-button type="primary" size="medium" @click="listInstanceInfos">{{$t('message.query')}}</el-button>
+            <el-button type="cancel" size="medium" @click="onClickRest">{{$t('message.reset')}}</el-button>
           </el-form-item>
         </el-form>
       </el-col>
       <el-col :span="2">
         <div style="float:right;padding-right:10px">
-          <el-button type="primary" @click="listInstanceInfos">{{$t('message.refresh')}}</el-button>
+          <el-button type="primary" size="medium" @click="listInstanceInfos">{{$t('message.refresh')}}</el-button>
         </div>
       </el-col>
     </el-row>
@@ -59,8 +59,9 @@
         style="width: 100%"
         :row-class-name="instanceTableRowClassName"
       >
-        <el-table-column :show-overflow-tooltip="true" prop="jobId" :label="$t('message.jobId')" width="80" />
+        <el-table-column :show-overflow-tooltip="true" prop="jobId" :label="$t('message.jobId')" width="80px" />
         <el-table-column :show-overflow-tooltip="true" prop="jobName" :label="$t('message.jobName')" />
+        <el-table-column :show-overflow-tooltip="true" prop="serviceName" :label="$t('message.serviceName')" />
         <el-table-column
           v-if="instanceQueryContent.type === 'WORKFLOW'"
           :show-overflow-tooltip="true"
@@ -68,8 +69,8 @@
           :label="$t('message.wfInstanceId')"
           width="155"
         />
-        <el-table-column :show-overflow-tooltip="true" prop="instanceId" :label="$t('message.instanceId')" />
-        <el-table-column prop="status" :label="$t('message.status')" width="160">
+        <el-table-column :show-overflow-tooltip="true" width="180" prop="instanceId" :label="$t('message.instanceId')" />
+        <el-table-column prop="status" :label="$t('message.status')">
           <template slot-scope="scope">{{fetchStatus(scope.row.status)}}</template>
         </el-table-column>
         <el-table-column  prop="actualTriggerTime" :label="$t('message.triggerTime')" width="150"/>
@@ -171,6 +172,7 @@ export default {
         wfInstanceId: undefined,
         status: "",
         jobId: undefined,
+        serviceName: undefined,
         type: "NORMAL"
       },
       // 实例查询结果
@@ -224,6 +226,7 @@ export default {
       this.instanceQueryContent.jobId = undefined;
       this.instanceQueryContent.instanceId = undefined;
       this.instanceQueryContent.wfInstanceId = undefined;
+      this.instanceQueryContent.serviceName = undefined;
       this.instanceQueryContent.status = "";
       this.listInstanceInfos();
     },

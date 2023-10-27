@@ -36,7 +36,7 @@ export default {
         },
 
         fetchExportInfo(type, targetId) {
-            let api = '/job/export?jobId=' + targetId;
+            let api = '/job/export?jobIdList=' + targetId;
             if (type === 'WORKFLOW') {
                 api = '/workflow/export?workflowId=' + targetId;
             }
@@ -51,7 +51,7 @@ export default {
             if (this.jsonContent === undefined || this.jsonContent.length === 0) {
                 return;
             }
-            this.axios.post("/job/save", JSON.parse(this.jsonContent)).then()
+            this.axios.post("/job/batchSave", JSON.parse(this.jsonContent)).then()
         },
 
         onClickCancelButton() {
@@ -67,7 +67,7 @@ export default {
     }
     ,mounted() {
         console.log("[Exporter] mounted Exporter with params, type=%s, mode=%s, targetId=%s", this.type, this.mode, this.targetId);
-        if (this.mode === 'EXPORT') {
+        if (this.mode === 'EXPORT' || this.mode === 'BATCH_EXPORT') {
             this.fetchExportInfo(this.type, this.targetId);
         }
     }

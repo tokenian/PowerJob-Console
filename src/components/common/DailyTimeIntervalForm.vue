@@ -3,7 +3,7 @@
     <el-form ref="form" :model="dailyTimeIntervalExpress">
       <el-form-item :label="$t('message.interval')">
           <el-col :span="6">
-              <el-input v-model="dailyTimeIntervalExpress.interval"></el-input>
+              <el-input v-model="dailyTimeIntervalExpress.interval" placeholder="单位秒"></el-input>
           </el-col>
       </el-form-item>
 

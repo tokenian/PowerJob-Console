@@ -3,40 +3,44 @@
 
         <!--第一行，条件搜索栏（row布局：gutter代表栅格间隔，span代表占用格数）-->
         <el-row :gutter="20">
-
             <!-- 左侧搜索栏，占地面积 16/24 -->
-            <el-col :span="16">
-                <el-form :inline="true" :model="jobQueryContent" class="el-form--inline">
+            <el-col :span="15">
+                <el-form :inline="true" :model="jobQueryContent" class="el-form--inline" label-width="60px">
                     <el-form-item :label="$t('message.jobId')">
-                        <el-input v-model="jobQueryContent.jobId" :placeholder="$t('message.jobId')"/>
+                        <el-input v-model="jobQueryContent.jobId" style="width: 100px;" clearable size="medium" :placeholder="$t('message.jobId')"/>
+                    </el-form-item>
+                    <el-form-item :label="$t('message.serviceName')">
+                        <el-input v-model="jobQueryContent.serviceName" style="width: 140px;" clearable size="medium" :placeholder="$t('message.serviceName')"/>
                     </el-form-item>
                     <el-form-item :label="$t('message.keyword')">
-                        <el-input v-model="jobQueryContent.keyword" :placeholder="$t('message.keyword')"/>
+                        <el-input v-model="jobQueryContent.keyword" style="width: 120px;" clearable size="medium" :placeholder="$t('message.keyword')"/>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="listJobInfos">{{$t('message.query')}}</el-button>
-                        <el-button type="cancel" @click="onClickReset">{{$t('message.reset')}}</el-button>
+                        <el-button type="primary" size="medium" @click="listJobInfos">{{$t('message.query')}}</el-button>
+                        <el-button type="cancel" size="medium" @click="onClickReset">{{$t('message.reset')}}</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
 
             <!-- 右侧新增任务按钮，占地面积 4/24 -->
-            <el-col :span="4">
-                <div style="float:right;">
-                    <el-button type="success" @click="onClickJobInputButton">{{$t('message.inputJob')}}</el-button>
-                </div>
+            <el-col :span="3">
+                <el-button type="success" size="medium" @click="onClickJobInputButton">{{$t('message.inputJob')}}</el-button>
             </el-col>
-            <el-col :span="4">
-                <div style="float:right;padding-right:10px">
-                <el-button type="primary" @click="onClickNewJob">{{$t('message.newJob')}}</el-button>
-                </div>
+            <el-col :span="3">
+                <el-button type="success" size="medium" @click="onClickJobBatchExportButton">{{$t('message.exportJob')}}</el-button>
             </el-col>
+            <el-col :span="3">
+                <el-button type="primary" size="medium" @click="onClickNewJob">{{$t('message.newJob')}}</el-button>
+            </el-col>
+
         </el-row>
 
         <!--第二行，任务数据表格-->
         <el-row>
-            <el-table :data="jobInfoPageResult.data" style="width: 100%">
+            <el-table :data="jobInfoPageResult.data" style="width: 100%" @selection-change="handleSelectionChange">
+                <el-table-column type="selection" width="55"></el-table-column>
                 <el-table-column prop="id" :label="$t('message.jobId')" width="80"/>
+                <el-table-column prop="serviceName" :label="$t('message.serviceName')"/>
                 <el-table-column prop="jobName" :label="$t('message.jobName')" />
                 <el-table-column :label="$t('message.scheduleInfo')" >
                     <template slot-scope="scope">
@@ -58,9 +62,10 @@
                         <el-switch v-model="scope.row.enable" active-color="#13ce66" inactive-color="#ff4949" @change="changeJobStatus(scope.row)"/>
                     </template>
                 </el-table-column>
-                <el-table-column :label="$t('message.operation')" width="150">
+                <el-table-column :label="$t('message.operation')" width="200">
                     <template slot-scope="scope">
                         <el-button size="mini" type="text" @click="onClickModify(scope.row)">{{$t('message.edit')}}</el-button>
+                        <el-button size="mini" type="text" @click="onClickCopyJob(scope.row)">{{$t('message.copy')}}</el-button>
                         <el-button size="mini" type="text" @click="onClickRun(scope.row)">{{$t('message.run')}}</el-button>
                         <el-dropdown trigger="click">
                             <el-button size="mini" type="text">{{$t('message.more')}}</el-button>
@@ -70,9 +75,6 @@
                                 </el-dropdown-item>
                                 <el-dropdown-item>
                                     <el-button size="mini" type="text" @click="onClickRunHistory(scope.row)">{{$t('message.runHistory')}}</el-button>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                  <el-button size="mini" type="text" @click="onClickCopyJob(scope.row)">{{$t('message.copy')}}</el-button>
                                 </el-dropdown-item>
                                 <el-dropdown-item>
                                     <el-button size="mini" type="text" @click="onClickJobExportButton(scope.row)">{{$t('message.export')}}</el-button>
@@ -100,9 +102,19 @@
 
         <el-dialog :close-on-click-modal="false" :visible.sync="modifiedJobFormVisible" width="80%">
             <el-form :model="modifiedJobForm" label-width="120px">
-
-                <el-form-item :label="$t('message.jobName')">
-                    <el-input v-model="modifiedJobForm.jobName"/>
+                <el-form-item :label="$t('message.jobBasic')">
+                    <el-row :gutter="20">
+                      <el-col :span="6">
+                        <el-input v-model="modifiedJobForm.jobName">
+                            <template slot="prepend">{{$t('message.jobName')}}</template>
+                        </el-input>
+                      </el-col>
+                      <el-col :span="6">
+                        <el-input v-model="modifiedJobForm.serviceName">
+                            <template slot="prepend">{{$t('message.serviceName')}}</template>
+                        </el-input>
+                      </el-col>
+                    </el-row>
                 </el-form-item>
                 <el-form-item :label="$t('message.jobDescription')">
                     <el-input v-model="modifiedJobForm.jobDescription"/>
@@ -112,7 +124,7 @@
                 </el-form-item>
                 <el-form-item :label="$t('message.scheduleInfo')">
                     <el-row>
-                        <el-col :span="8">
+                        <el-col :span="6">
                             <el-select v-model="modifiedJobForm.timeExpressionType" :placeholder="$t('message.timeExpressionType')">
                                 <el-option
                                         v-for="item in timeExpressionTypeOptions"
@@ -122,7 +134,7 @@
                                 </el-option>
                             </el-select>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :span="14">
                             <el-input v-model="modifiedJobForm.timeExpression" :placeholder="$t('message.timeExpressionPlaceHolder')" v-if="['CRON', 'FIXED_DELAY', 'FIXED_RATE'].includes(modifiedJobForm.timeExpressionType)" />
                             <el-button type="primary" @click="onClickEditTimeExpression"  v-if="['DAILY_TIME_INTERVAL'].includes(modifiedJobForm.timeExpressionType)">点击编辑</el-button>
                         </el-col>
@@ -331,7 +343,7 @@
 
         <!-- 任务导入导出 -->
         <el-dialog :close-on-click-modal="false" :visible.sync="jobExporterDialogVisible" v-if='jobExporterDialogVisible'>
-            <Exporter type="JOB" :mode="jobExporterMode" :target-id="jobExporterTargetId"  @finished="eventFromExporter"></Exporter>
+            <Exporter type="JOB" :mode="jobExporterMode" :target-id="jobExporterTargetIds"  @finished="eventFromExporter"></Exporter>
         </el-dialog>
 
         <el-dialog
@@ -408,6 +420,7 @@
                     index: 0,
                     pageSize: 10,
                     jobId: undefined,
+                    serviceName: undefined,
                     keyword: undefined
                 },
                 // 任务列表（查询结果），包含index、pageSize、totalPages、totalItems、data（List类型）
@@ -443,8 +456,9 @@
 
                 // 任务导入导出相关功能
                 jobExporterMode: undefined,
-                jobExporterTargetId: undefined,
+                jobExporterTargetIds: undefined,
                 jobExporterDialogVisible: false,
+                multipleSelection: []
             }
         },
         methods: {
@@ -511,6 +525,7 @@
             onClickNewJob() {
                 this.modifiedJobForm.id = undefined;
                 this.modifiedJobForm.jobName = undefined;
+                this.modifiedJobForm.serviceName = undefined;
                 this.modifiedJobForm.jobDescription = undefined;
                 this.modifiedJobForm.jobParams = undefined;
                 this.modifiedJobForm.timeExpression = undefined;
@@ -583,6 +598,7 @@
               this.axios.post(url).then(res => {
                 that.modifiedJobForm = res
                 that.modifiedJobFormVisible = true;
+                this.listJobInfos();
               });
             },
             // 点击 历史记录
@@ -652,14 +668,28 @@
             // 任务导出按钮
             onClickJobExportButton(row) {
                 this.jobExporterMode = 'EXPORT';
-                this.jobExporterTargetId = row.id;
+                this.jobExporterTargetIds = Array.of(row.id);
                 this.jobExporterDialogVisible = true;
             },
             // 任务导入按钮
             onClickJobInputButton() {
                 this.jobExporterMode = 'INPUT';
-                this.jobExporterTargetId = undefined;
+                this.jobExporterTargetIds = undefined;
                 this.jobExporterDialogVisible = true;
+            },
+            //处理多选
+            handleSelectionChange(val){
+                this.multipleSelection = val;
+            },
+            //批量导出
+            onClickJobBatchExportButton(){
+                if(this.multipleSelection.length) {
+                    this.jobExporterMode = 'BATCH_EXPORT';
+                    this.jobExporterTargetIds = this.multipleSelection.map(row => row.id);
+                    this.jobExporterDialogVisible = true;
+                } else {
+                    this.$message.warning('没有选中数据！');
+                }
             },
             // 任务导出组件的回调
             eventFromExporter(content) {
