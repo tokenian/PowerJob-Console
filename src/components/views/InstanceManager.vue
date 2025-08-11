@@ -165,7 +165,7 @@ export default {
     return {
       // 实例查询对象
       instanceQueryContent: {
-        appId: this.$store.state.appInfo.id,
+        appId: window.localStorage.getItem("Power_appId"),
         index: 0,
         pageSize: 10,
         instanceId: undefined,
@@ -242,7 +242,7 @@ export default {
         "/instance/retry?instanceId=" +
         data.instanceId +
         "&appId=" +
-        that.$store.state.appInfo.id;
+          window.localStorage.getItem("Power_appId");
       this.axios.get(url).then(() => {
         that.$message.success(this.$t("message.success"));
         that.listInstanceInfos();
@@ -254,7 +254,7 @@ export default {
       let url = "/instance/stop?instanceId=" +
           data.instanceId +
           "&appId=" +
-          that.$store.state.appInfo.id;
+          window.localStorage.getItem("Power_appId");
       this.axios.get(url).then(() => {
         that.$message.success(this.$t("message.success"));
         // 重新加载列表
@@ -289,7 +289,7 @@ export default {
         "&index=" +
         this.logQueryContent.index +
         "&appId=" +
-        that.$store.state.appInfo.id;
+          window.localStorage.getItem("Power_appId");
       this.axios.get(url).then(res => {
         that.paginableInstanceLog = res;
         that.instanceLogVisible = true;
@@ -312,7 +312,7 @@ export default {
         "/instance/downloadLogUrl?instanceId=" +
         this.logQueryContent.instanceId +
         "&appId=" +
-        this.$store.state.appInfo.id;
+        window.localStorage.getItem("Power_appId");
       this.axios.get(url).then(res => window.open(res));
     },
     // 获取状态

@@ -184,7 +184,7 @@
                 </el-form-item>
                 <el-form-item :label="$t('message.runtimeConfig')">
                     <el-row>
-                        <el-col :span="6">
+                        <el-col :span="4">
                             <el-select v-model="modifiedJobForm.dispatchStrategy" :placeholder="$t('message.dispatchStrategy')">
                                 <el-option
                                     v-for="item in dispatchStrategy"
@@ -195,17 +195,23 @@
                             </el-select>
                         </el-col>
 
-                        <el-col :span="6">
+                      <el-col :span="5">
+                        <el-input v-if="modifiedJobForm.dispatchStrategy=='SPECIFY'" :placeholder="$t('message.dispatchStrategyConfig')" v-model="modifiedJobForm.dispatchStrategyConfig" class="ruleContent">
+                          <template slot="prepend">{{$t('message.dispatchStrategyConfig')}}</template>
+                        </el-input>
+                      </el-col>
+
+                        <el-col :span="5">
                             <el-input :placeholder="$t('message.maxInstanceNum')" v-model="modifiedJobForm.maxInstanceNum" class="ruleContent">
                                 <template slot="prepend">{{$t('message.maxInstanceNum')}}</template>
                             </el-input>
                         </el-col>
-                        <el-col :span="6">
+                        <el-col :span="5">
                             <el-input :placeholder="$t('message.threadConcurrency')" v-model="modifiedJobForm.concurrency" class="ruleContent">
                                 <template slot="prepend">{{$t('message.threadConcurrency')}}</template>
                             </el-input>
                         </el-col>
-                        <el-col :span="6">
+                        <el-col :span="5">
                             <el-input :placeholder="$t('message.timeout')" v-model="modifiedJobForm.instanceTimeLimit" class="ruleContent">
                                 <template slot="prepend">{{$t('message.timeout')}}</template>
                             </el-input>
@@ -324,6 +330,22 @@
                     </el-col>
                 </el-row>
               </el-form-item>
+
+              <el-form-item :label="$t('message.advanceConfig')">
+                <el-row>
+                  <el-col :span="6">
+                    <el-select v-model="modifiedJobForm.advancedRuntimeConfig.taskTrackerBehavior" :placeholder="$t('message.taskTrackerBehavior')">
+                      <el-option
+                          v-for="item in taskTrackerBehavior"
+                          :key="item.key"
+                          :label="item.label"
+                          :value="item.key">
+                      </el-option>
+                    </el-select>
+                  </el-col>
+                </el-row>
+              </el-form-item>
+
                 <el-form-item>
                     <el-button type="primary" @click="saveJob">{{$t('message.save')}}</el-button>
                     <el-button @click="modifiedJobFormVisible = false">{{$t('message.cancel')}}</el-button>
@@ -380,7 +402,7 @@
                     id: undefined,
                     jobName: "",
                     jobDescription: "",
-                    appId: this.$store.state.appInfo.id,
+                    appId: window.localStorage.getItem("Power_appId"),
                     jobParams: "",
                     timeExpressionType: "",
                     timeExpression: "",
@@ -393,6 +415,7 @@
                     instanceRetryNum: 0,
                     taskRetryNum: 1,
                     dispatchStrategy: undefined,
+                    dispatchStrategyConfig: undefined,
 
                     minCpuCores: 0,
                     minMemorySpace: 0,
@@ -412,11 +435,14 @@
                         type: 1,
                         level: undefined,
                         loggerName: undefined
+                    },
+                    advancedRuntimeConfig: {
+                      taskTrackerBehavior: undefined,
                     }
                 },
                 // 任务查询请求对象
                 jobQueryContent: {
-                    appId: this.$store.state.appInfo.id,
+                    appId: window.localStorage.getItem("Power_appId"),
                     index: 0,
                     pageSize: 10,
                     jobId: undefined,
@@ -440,7 +466,9 @@
                 // 日志类型
                 logType: [{key: 1, label: 'ONLINE'}, {key: 2, label: 'LOCAL'}, {key: 3, label: 'STDOUT'}, {key: 4, label: 'LOCAL_AND_ONLINE'}, {key: 999, label: 'NULL'}],
                 // 分发类型
-                dispatchStrategy: [{key: 'HEALTH_FIRST', label: 'HEALTH_FIRST'}, {key: 'RANDOM', label: 'RANDOM'}],
+                dispatchStrategy: [{key: 'HEALTH_FIRST', label: 'HEALTH_FIRST'}, {key: 'RANDOM', label: 'RANDOM'}, {key: 'SPECIFY', label: 'SPECIFY'}],
+                // TaskTracker 表现
+                taskTrackerBehavior: [{key: 1, label: 'NORMAL'}, {key: 11, label: 'PADDLING'}],
                 // 用户列表
                 userList: [],
                 // 时间表达式校验窗口
@@ -560,7 +588,7 @@
             // 点击 立即运行按钮
             onClickRun(data) {
                 let that = this;
-                let url = "/job/run?jobId=" + data.id + "&appId=" + that.$store.state.appInfo.id;
+                let url = "/job/run?jobId=" + data.id + "&appId=" + window.localStorage.getItem("Power_appId");
                 if (this.temporaryRowData && this.runParameter) {
                     url += `&instanceParams=${encodeURIComponent(this.runParameter)}`
                 }
