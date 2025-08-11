@@ -31,7 +31,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.69.3",
+    "node-sass": "yarn:dart-sass",
     "sass-loader": "^10.1.1",
     "vue-cli-plugin-element": "~1.0.1",
     "vue-cli-plugin-element-ui": "~1.1.4",
