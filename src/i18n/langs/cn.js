@@ -109,7 +109,6 @@ const cn = {
         'timeExpressionType': '时间表达式类型',
         'dispatchStrategy': '分发策略',
         'dispatchStrategyConfig': '分发策略配置',
-        'timeExpressionPlaceHolder': 'CRON 填写 CRON 表达式，秒级任务填写整数，API 无需填写',
         'timeExpressionPlaceHolder': 'CRON填写CRON表达式(支持Quartx)，固定任务填写spring时间: 1s、1m、1h，API无需填写',
         'executeConfig': '执行配置',
         'javaProcessorInfoPLH': '全限定类名，eg：tech.powerjob.HelloWordProcessor',
