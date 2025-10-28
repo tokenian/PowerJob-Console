@@ -146,7 +146,7 @@
                 }
             },
             versaOnline(row){
-                let appId = this.$store.state.appInfo.id;
+                let appId = window.localStorage.getItem("Power_appId");
                 this.axios.get('/system/versaOnline?appId='+ appId + '&address=' + row.address).then(res =>{
                     console.log(res);
                     this.fetchWorkerList(appId);
